@@ -269,8 +269,22 @@
 
   // ── Delete Habit ──
   function deleteHabit(id) {
-    if (!confirm('この習慣を削除しますか？')) return;
+    if (!confirm('この習慣を削除しますか？\n※継続データもすべて消えます')) return;
     const habits = loadHabits().filter((h) => h.id !== id);
+    saveHabits(habits);
+    render();
+  }
+
+  // ── Rename Habit ──
+  function renameHabit(id) {
+    const habits = loadHabits();
+    const habit = habits.find((h) => h.id === id);
+    if (!habit) return;
+    const newName = prompt('新しい名前を入力してください', habit.name);
+    if (newName === null) return; // キャンセル
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+    habit.name = trimmed;
     saveHabits(habits);
     render();
   }
@@ -366,7 +380,10 @@
               <div class="habit-meta">開始: ${escapeHtml(habit.createdAt)}</div>
             </div>
           </div>
-          <button class="btn-delete" data-id="${escapeHtml(habit.id)}" title="削除">✕</button>
+          <div class="habit-actions">
+            <button class="btn-edit" data-id="${escapeHtml(habit.id)}" title="名前を変更">✏️</button>
+            <button class="btn-delete" data-id="${escapeHtml(habit.id)}" title="削除">✕</button>
+          </div>
         </div>
 
         <div class="streak-display ${streak === 0 ? 'streak-zero' : ''}">
@@ -409,6 +426,11 @@
     const checkBtn = e.target.closest('.btn-check.active');
     if (checkBtn) {
       completeToday(checkBtn.dataset.id);
+      return;
+    }
+    const editBtn = e.target.closest('.btn-edit');
+    if (editBtn) {
+      renameHabit(editBtn.dataset.id);
       return;
     }
     const deleteBtn = e.target.closest('.btn-delete');

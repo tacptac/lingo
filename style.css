@@ -298,29 +298,49 @@ h1 {
   margin-top: 2px;
 }
 
+.habit-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-edit,
 .btn-delete {
   width: 32px;
   height: 32px;
   border: none;
   background: transparent;
   color: var(--text-dim);
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 0.5;
   transition: all 0.15s;
 }
 
+.habit-card:hover .btn-edit,
 .habit-card:hover .btn-delete {
   opacity: 1;
+}
+
+.btn-edit:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
 }
 
 .btn-delete:hover {
   background: rgba(255, 75, 75, 0.15);
   color: var(--danger);
+}
+
+/* スマホではタップしやすいよう常に表示 */
+@media (hover: none) {
+  .btn-edit,
+  .btn-delete {
+    opacity: 1;
+  }
 }
 
 /* Streak Display */
