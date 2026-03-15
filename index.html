@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lingo - 継続トラッカー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- お祝いパーティクル用のキャンバス -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app">
+    <header>
+      <div class="logo">
+        <span class="logo-icon">🔥</span>
+        <h1>Lingo</h1>
+      </div>
+      <p class="tagline">毎日の継続が、あなたを変える</p>
+    </header>
+
+    <!-- 習慣追加フォーム -->
+    <div class="add-habit" id="add-habit-section">
+      <button class="btn-add" id="btn-show-form" title="新しい習慣を追加">
+        <span>＋</span> 新しい習慣を追加
+      </button>
+      <div class="add-form hidden" id="add-form">
+        <input type="text" id="habit-input" placeholder="継続したいこと（例：ランニング）" maxlength="40" autofocus>
+        <div class="emoji-picker">
+          <span class="emoji-label">アイコン:</span>
+          <div class="emoji-options" id="emoji-options">
+            <button class="emoji-btn selected" data-emoji="📚">📚</button>
+            <button class="emoji-btn" data-emoji="🏃">🏃</button>
+            <button class="emoji-btn" data-emoji="💪">💪</button>
+            <button class="emoji-btn" data-emoji="🎵">🎵</button>
+            <button class="emoji-btn" data-emoji="✍️">✍️</button>
+            <button class="emoji-btn" data-emoji="🧘">🧘</button>
+            <button class="emoji-btn" data-emoji="🎨">🎨</button>
+            <button class="emoji-btn" data-emoji="💻">💻</button>
+            <button class="emoji-btn" data-emoji="🍳">🍳</button>
+            <button class="emoji-btn" data-emoji="🌱">🌱</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel" id="btn-cancel">キャンセル</button>
+          <button class="btn-submit" id="btn-submit">追加する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 習慣一覧 -->
+    <div class="habits-list" id="habits-list"></div>
+
+    <!-- 空の状態 -->
+    <div class="empty-state hidden" id="empty-state">
+      <div class="empty-illustration">🌟</div>
+      <p>継続したいことを追加して<br>今日から始めましょう！</p>
+    </div>
+  </div>
+
+  <!-- 褒めモーダル -->
+  <div class="praise-overlay hidden" id="praise-overlay">
+    <div class="praise-modal" id="praise-modal">
+      <div class="praise-emoji" id="praise-emoji"></div>
+      <div class="praise-streak" id="praise-streak"></div>
+      <div class="praise-message" id="praise-message"></div>
+      <button class="btn-praise-close" id="btn-praise-close">ありがとう！</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
