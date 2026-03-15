@@ -52,14 +52,31 @@
     return streak;
   }
 
-  function getLast14Days() {
-    const days = [];
-    for (let i = 13; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      days.push(dateStr(d));
+  function getContributionGrid() {
+    // 直近5週間（35日）分のグリッドを生成
+    // GitHub風: 列=週、行=曜日（日〜土）
+    const today = new Date();
+    const todayDay = today.getDay(); // 0=日, 6=土
+    // 今週の土曜日を最終列の最後にする
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + (6 - todayDay));
+    // 5週間前の日曜日を開始にする
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 34); // 5週 = 35日
+
+    const weeks = [];
+    const current = new Date(startDate);
+    let week = [];
+    while (current <= endDate) {
+      week.push(dateStr(current));
+      if (week.length === 7) {
+        weeks.push(week);
+        week = [];
+      }
+      current.setDate(current.getDate() + 1);
     }
-    return days;
+    if (week.length > 0) weeks.push(week);
+    return weeks;
   }
 
   // ── Praise Messages ──
@@ -348,23 +365,13 @@
 
     emptyState.classList.add('hidden');
     const today = todayStr();
-    const last14 = getLast14Days();
+    const grid = getContributionGrid();
+    const dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
 
     habits.forEach((habit) => {
       const streak = calcStreak(habit.completedDates);
       const doneToday = habit.completedDates.includes(today);
       const milestone = getMilestoneLabel(streak);
-
-      // 次のマイルストーンまでの進捗
-      const milestones = [3, 7, 14, 21, 30, 50, 100, 365];
-      let nextMilestone = milestones.find((m) => m > streak) || streak + 10;
-      let prevMilestone = [...milestones].reverse().find((m) => m <= streak) || 0;
-      const progress = nextMilestone > prevMilestone
-        ? ((streak - prevMilestone) / (nextMilestone - prevMilestone))
-        : 1;
-
-      const circumference = 2 * Math.PI * 20;
-      const dashOffset = circumference * (1 - progress);
 
       const card = document.createElement('div');
       card.className = `habit-card${doneToday ? ' completed-today' : ''}`;
@@ -387,21 +394,22 @@
         </div>
 
         <div class="streak-display ${streak === 0 ? 'streak-zero' : ''}">
-          <div class="progress-ring-container">
-            <svg class="progress-ring" width="52" height="52">
-              <circle class="progress-ring-bg" cx="26" cy="26" r="20" />
-              <circle class="progress-ring-fill" cx="26" cy="26" r="20"
-                stroke-dasharray="${circumference}"
-                stroke-dashoffset="${dashOffset}" />
-            </svg>
-            <div class="progress-ring-text">${streak}</div>
+          <div class="streak-count">
+            <span class="streak-number">${streak}</span>
+            <span class="streak-label">日連続</span>
           </div>
-          <div class="streak-calendar">
-            ${last14.map((day) => {
-              const filled = habit.completedDates.includes(day);
-              const isToday = day === today;
-              return `<div class="cal-dot${filled ? ' filled' : ''}${isToday ? ' today' : ''}" title="${day}"></div>`;
-            }).join('')}
+          <div class="grass-graph">
+            <div class="grass-day-labels">
+              ${dayLabels.map((l, i) => `<div class="grass-day-label">${i % 2 === 1 ? l : ''}</div>`).join('')}
+            </div>
+            <div class="grass-grid">
+              ${grid.map((week) => `<div class="grass-week">${week.map((day) => {
+                const filled = habit.completedDates.includes(day);
+                const isToday = day === today;
+                const isFuture = day > today;
+                return `<div class="grass-cell${filled ? ' filled' : ''}${isToday ? ' today' : ''}${isFuture ? ' future' : ''}" title="${day}"></div>`;
+              }).join('')}</div>`).join('')}
+            </div>
           </div>
         </div>
 
