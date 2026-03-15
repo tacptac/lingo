@@ -620,6 +620,61 @@ h1 {
 
 
 
+/* ========== Debug Panel ========== */
+.debug-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border-top: 2px solid #ff9600;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 3000;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.debug-label {
+  color: #ff9600;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.debug-date {
+  color: #ccc;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.debug-btn {
+  padding: 4px 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #2a2a3e;
+  color: #ddd;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.debug-btn:hover {
+  background: #3a3a50;
+  border-color: #888;
+}
+
+.debug-reset {
+  border-color: #ff9600;
+  color: #ff9600;
+}
+
+.debug-reset:hover {
+  background: rgba(255, 150, 0, 0.15);
+}
+
 /* ========== Responsive ========== */
 @media (max-width: 400px) {
   .app {

@@ -5,6 +5,15 @@
 
   // ── Storage ──
   const STORAGE_KEY = 'lingo_habits';
+  const DEBUG_OFFSET_KEY = 'lingo_debug_offset';
+
+  function getDebugOffset() {
+    return parseInt(localStorage.getItem(DEBUG_OFFSET_KEY) || '0', 10);
+  }
+
+  function setDebugOffset(days) {
+    localStorage.setItem(DEBUG_OFFSET_KEY, String(days));
+  }
 
   function loadHabits() {
     try {
@@ -22,6 +31,7 @@
   // ── Date Helpers ──
   function todayStr() {
     const d = new Date();
+    d.setDate(d.getDate() + getDebugOffset());
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
@@ -56,6 +66,7 @@
     // 直近5週間（35日）分のグリッドを生成
     // GitHub風: 列=週、行=曜日（日〜土）
     const today = new Date();
+    today.setDate(today.getDate() + getDebugOffset());
     const todayDay = today.getDay(); // 0=日, 6=土
     // 今週の土曜日を最終列の最後にする
     const endDate = new Date(today);
@@ -457,4 +468,35 @@
   // ── Init ──
   habitsList.addEventListener('click', handleListClick);
   render();
+
+  // ── Debug Panel ──
+  const debugDate = document.getElementById('debug-date');
+  const debugBack = document.getElementById('debug-back');
+  const debugForward = document.getElementById('debug-forward');
+  const debugReset = document.getElementById('debug-reset');
+
+  function updateDebugDate() {
+    const offset = getDebugOffset();
+    debugDate.textContent = todayStr() + (offset !== 0 ? ` (${offset > 0 ? '+' : ''}${offset}日)` : '');
+  }
+
+  debugBack.addEventListener('click', () => {
+    setDebugOffset(getDebugOffset() - 1);
+    updateDebugDate();
+    render();
+  });
+
+  debugForward.addEventListener('click', () => {
+    setDebugOffset(getDebugOffset() + 1);
+    updateDebugDate();
+    render();
+  });
+
+  debugReset.addEventListener('click', () => {
+    setDebugOffset(0);
+    updateDebugDate();
+    render();
+  });
+
+  updateDebugDate();
 })();
